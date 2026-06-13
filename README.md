@@ -1,13 +1,67 @@
-## avif
-[![Status](https://github.com/gen2brain/avif/actions/workflows/test.yml/badge.svg)](https://github.com/gen2brain/avif/actions)
-[![Go Reference](https://pkg.go.dev/badge/github.com/gen2brain/avif.svg)](https://pkg.go.dev/github.com/gen2brain/avif)
+# go-avif
 
-Go encoder/decoder for [AV1 Image File Format (AVIF)](https://en.wikipedia.org/wiki/AVIF) with support for animated AVIF images (decode only).
+## 実行に必要なファイル
 
-Based on [libavif](https://github.com/AOMediaCodec/libavif) and [aom](https://aomedia.googlesource.com/aom/) compiled to [WASM](https://en.wikipedia.org/wiki/WebAssembly) and used with [wazero](https://wazero.io/) runtime (CGo-free).
+このライブラリは [purego](https://github.com/ebitengine/purego) を使って libavif の共有ライブラリを動的に読み込みます。事前に以下のファイルをインストールしてください（libavif 1.1.0 以上が必要です）。
 
-The library will first try to use a dynamic/shared library (if installed) via [purego](https://github.com/ebitengine/purego) and will fall back to WASM.
+| OS | 必要なファイル |
+|---|---|
+| Windows | `libavif.dll` |
+| Linux | `libavif.so` |
+| macOS | `libavif.dylib` |
 
-### Build tags
+## 使い方
 
-* `nodynamic` - do not use dynamic/shared library (use only WASM)
+### インポート
+
+```go
+import "github.com/f0reth/go-avif"
+```
+
+### デコード（AVIF → image.Image）
+
+```go
+f, _ := os.Open("input.avif")
+defer f.Close()
+
+img, err := avif.Decode(f)
+```
+
+### アニメーション AVIF のデコード
+
+```go
+f, _ := os.Open("anim.avifs")
+defer f.Close()
+
+ret, err := avif.DecodeAll(f)
+// ret.Image: 各フレームの画像スライス
+// ret.Delay: 各フレームの表示時間（秒）
+```
+
+### エンコード（image.Image → AVIF）
+
+```go
+f, _ := os.Create("output.avif")
+defer f.Close()
+
+err := avif.Encode(f, img)
+```
+
+### エンコードオプション
+
+```go
+err := avif.Encode(f, img, avif.Options{
+    Quality:           80,  // 画質 0〜100（100 で可逆、デフォルト: 60）
+    QualityAlpha:      80,  // アルファの画質 0〜100
+    Speed:             8,   // エンコード速度 0（高品質）〜10（速い、デフォルト: 10）
+    ChromaSubsampling: image.YCbCrSubsampleRatio420, // クロマサブサンプリング 444|422|420
+})
+```
+
+### ライブラリの読み込み確認
+
+```go
+if err := avif.Dynamic(); err != nil {
+    log.Fatal("共有ライブラリが見つかりません:", err)
+}
+```
