@@ -1,4 +1,4 @@
-//go:build unix && !darwin && !nodynamic
+//go:build unix && !darwin
 
 package avif
 

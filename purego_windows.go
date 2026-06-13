@@ -1,4 +1,4 @@
-//go:build windows && !nodynamic
+//go:build windows
 
 package avif
 

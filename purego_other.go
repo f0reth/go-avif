@@ -1,4 +1,4 @@
-//go:build (!unix && !darwin && !windows) || nodynamic
+//go:build !unix && !darwin && !windows
 
 package avif
 
@@ -10,14 +10,14 @@ import (
 
 var (
 	dynamic    = false
-	dynamicErr = fmt.Errorf("avif: dynamic disabled")
+	dynamicErr = fmt.Errorf("avif: platform not supported")
 )
 
-func decodeDynamic(r io.Reader, configOnly, decodeAll bool) (*AVIF, image.Config, error) {
+func decode(r io.Reader, configOnly, decodeAll bool) (*AVIF, image.Config, error) {
 	return nil, image.Config{}, dynamicErr
 }
 
-func encodeDynamic(w io.Writer, m image.Image, quality, qualityAlpha, speed int, subsampleRatio image.YCbCrSubsampleRatio) error {
+func encode(w io.Writer, m image.Image, quality, qualityAlpha, speed int, subsampleRatio image.YCbCrSubsampleRatio) error {
 	return dynamicErr
 }
 

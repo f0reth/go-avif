@@ -1,4 +1,4 @@
-//go:build (unix || darwin || windows) && !nodynamic
+//go:build unix || darwin || windows
 
 package avif
 
@@ -16,7 +16,7 @@ import (
 	"github.com/ebitengine/purego"
 )
 
-func decodeDynamic(r io.Reader, configOnly, decodeAll bool) (*AVIF, image.Config, error) {
+func decode(r io.Reader, configOnly, decodeAll bool) (*AVIF, image.Config, error) {
 	var err error
 	var cfg image.Config
 	var data []byte
@@ -121,7 +121,7 @@ func decodeDynamic(r io.Reader, configOnly, decodeAll bool) (*AVIF, image.Config
 	return av, cfg, nil
 }
 
-func encodeDynamic(w io.Writer, m image.Image, quality, qualityAlpha, speed int, subsampleRatio image.YCbCrSubsampleRatio) error {
+func encode(w io.Writer, m image.Image, quality, qualityAlpha, speed int, subsampleRatio image.YCbCrSubsampleRatio) error {
 	i := imageToRGBA(m)
 
 	var chroma int

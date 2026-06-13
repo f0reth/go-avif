@@ -1,4 +1,4 @@
-//go:build darwin && !nodynamic
+//go:build darwin
 
 package avif
 
