@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	libname = "libavif.dll"
+	libname = "avif.dll"
 )
 
 func loadLibrary() (uintptr, error) {
